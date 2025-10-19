@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Mahasiswa extends Model
 {
     use HasFactory;
+    protected $fillable = ['nim', 'nama', 'alamat', 'prodi_id'];
 
-    protected $fillable = [
-        'nim',
-        'nama',
-        'prodi'
-    ];
+    public function prodi()
+    {
+        return $this->belongsTo(Prodi::class);
+    }
 }

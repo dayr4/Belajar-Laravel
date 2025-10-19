@@ -63,13 +63,16 @@ class MahasiswaController extends Controller
 
     public function index()
     {
-        $mahasiswa = Mahasiswa::all();
+        // ambil data mahasiswa + relasi prodi
+        $mahasiswa = Mahasiswa::with('prodi')->get();
         return view('mahasiswa.index', compact('mahasiswa'));
     }
 
     public function create()
     {
-        return view('mahasiswa.create');
+        // ambil semua prodi untuk pilihan dropdown
+        $prodi = Prodi::all();
+        return view('mahasiswa.create', compact('prodi'));
     }
 
     public function store(Request $request)
@@ -77,7 +80,8 @@ class MahasiswaController extends Controller
         $request->validate([
             'nim' => 'required|min:4|unique:mahasiswas',
             'nama' => 'required',
-            'prodi' => 'required'
+            'alamat' => 'nullable',
+            'prodi_id' => 'required|exists:prodis,id'
         ]);
 
         Mahasiswa::create($request->all());
@@ -87,7 +91,8 @@ class MahasiswaController extends Controller
     public function edit($id)
     {
         $m = Mahasiswa::findOrFail($id);
-        return view('mahasiswa.edit', compact('m'));
+        $prodi = Prodi::all();
+        return view('mahasiswa.edit', compact('m', 'prodi'));
     }
 
     public function update(Request $request, $id)
@@ -95,7 +100,8 @@ class MahasiswaController extends Controller
         $request->validate([
             'nim' => 'required|min:4',
             'nama' => 'required',
-            'prodi' => 'required'
+            'alamat' => 'nullable',
+            'prodi_id' => 'required|exists:prodis,id'
         ]);
 
         $m = Mahasiswa::findOrFail($id);
