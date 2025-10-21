@@ -1,30 +1,37 @@
-<h2>Daftar Fakultas</h2>
-<a href="{{ route('fakultas.create') }}">+ Tambah Fakultas</a>
+@extends('layouts.app')
 
-@if(session('success'))
-    <p style="color:green;">{{ session('success') }}</p>
-@endif
+@section('content')
+<div class="container mt-4">
+    <h2>Daftar Fakultas</h2>
+    <a href="{{ route('fakultas.create') }}" class="btn btn-primary mb-3">+ Tambah Fakultas</a>
 
-<table border="1" cellpadding="5">
-    <tr>
-        <th>ID</th>
-        <th>Nama Fakultas</th>
-        <th>Aksi</th>
-    </tr>
-    @foreach($fakultas as $f)
-    <tr>
-        <td>{{ $f->id }}</td>
-        <td>{{ $f->nama_fakultas }}</td>
-        <td>
-            <a href="{{ route('fakultas.edit', $f->id) }}">Edit</a> |
-            <form action="{{ route('fakultas.destroy', $f->id) }}" method="POST" style="display:inline;">
-                @csrf
-                @method('DELETE')
-                <button type="submit" onclick="return confirm('Yakin hapus?')">Hapus</button>
-            </form>
-        </td>
-    </tr>
-    @endforeach
-</table>
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
-<a href="{{ route('mahasiswa.index') }}">← Kembali ke Mahasiswa</a>
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>No</th>
+                <th>Nama Fakultas</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($fakultas as $f)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $f->nama_fakultas }}</td>
+                <td>
+                    <a href="{{ route('fakultas.edit', $f->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ route('fakultas.destroy', $f->id) }}" method="POST" style="display:inline-block;">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus fakultas ini?')">Hapus</button>
+                    </form>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+@endsection

@@ -1,27 +1,28 @@
-<h2>Tambah Prodi</h2>
+@extends('layouts.app')
 
-@if ($errors->any())
-    <ul style="color:red;">
-        @foreach ($errors->all() as $err)
-            <li>{{ $err }}</li>
-        @endforeach
-    </ul>
-@endif
+@section('content')
+<div class="container mt-4">
+    <h2>Tambah Prodi</h2>
 
-<form action="{{ route('prodi.store') }}" method="POST">
-    @csrf
-    <label>Nama Prodi:</label><br>
-    <input type="text" name="nama"><br>
+    <form action="{{ route('prodi.store') }}" method="POST">
+        @csrf
+        <div class="mb-3">
+            <label class="form-label">Nama Prodi</label>
+            <input type="text" name="nama" class="form-control" required>
+        </div>
 
-    <label>Fakultas:</label><br>
-    <select name="fakultas_id">
-        <option value="">-- Pilih Fakultas --</option>
-        @foreach ($fakultas as $f)
-            <option value="{{ $f->id }}">{{ $f->nama_fakultas }}</option>
-        @endforeach
-    </select><br><br>
+        <div class="mb-3">
+            <label class="form-label">Fakultas</label>
+            <select name="fakultas_id" class="form-control" required>
+                <option value="">-- Pilih Fakultas --</option>
+                @foreach($fakultas as $f)
+                    <option value="{{ $f->id }}">{{ $f->nama_fakultas }}</option>
+                @endforeach
+            </select>
+        </div>
 
-    <button type="submit">Simpan</button>
-</form>
-
-<a href="{{ route('prodi.index') }}">← Kembali</a>
+        <button class="btn btn-primary">Simpan</button>
+        <a href="{{ route('prodi.index') }}" class="btn btn-secondary">Kembali</a>
+    </form>
+</div>
+@endsection
