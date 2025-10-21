@@ -25,21 +25,23 @@ class FakultasController extends Controller
         return redirect()->route('fakultas.index')->with('success', 'Fakultas berhasil ditambahkan.');
     }
 
-    public function edit(Fakultas $fakulta)
+    public function edit($id)
     {
-        return view('fakultas.edit', compact('fakulta'));
+        $fakultas = Fakultas::findOrFail($id);
+        return view('fakultas.edit', compact('fakultas'));
     }
 
-    public function update(Request $request, Fakultas $fakulta)
+    public function update(Request $request, $id)
     {
         $request->validate(['nama_fakultas' => 'required']);
-        $fakulta->update($request->all());
-        return redirect()->route('fakultas.index')->with('success', 'Fakultas berhasil diperbarui.');
+        $fakultas = Fakultas::findOrFail($id);
+        $fakultas->update($request->all());
+        return redirect()->route('fakultas.index')->with('success', 'Data berhasil diperbarui.');
     }
 
-    public function destroy(Fakultas $fakulta)
+    public function destroy($id)
     {
-        $fakulta->delete();
-        return redirect()->route('fakultas.index')->with('success', 'Fakultas dihapus.');
+        Fakultas::findOrFail($id)->delete();
+        return redirect()->route('fakultas.index')->with('success', 'Data berhasil dihapus.');
     }
 }

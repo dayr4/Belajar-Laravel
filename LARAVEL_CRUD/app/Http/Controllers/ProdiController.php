@@ -24,31 +24,36 @@ class ProdiController extends Controller
     {
         $request->validate([
             'nama' => 'required',
-            'fakultas_id' => 'required'
+            'fakultas_id' => 'required|exists:fakultas,id'
         ]);
+
         Prodi::create($request->all());
         return redirect()->route('prodi.index')->with('success', 'Prodi berhasil ditambahkan.');
     }
 
-    public function edit(Prodi $prodi)
+    public function edit($id)
     {
+        $prodi = Prodi::findOrFail($id);
         $fakultas = Fakultas::all();
         return view('prodi.edit', compact('prodi', 'fakultas'));
     }
 
-    public function update(Request $request, Prodi $prodi)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'nama' => 'required',
-            'fakultas_id' => 'required'
+            'fakultas_id' => 'required|exists:fakultas,id'
         ]);
+
+        $prodi = Prodi::findOrFail($id);
         $prodi->update($request->all());
-        return redirect()->route('prodi.index')->with('success', 'Prodi berhasil diperbarui.');
+
+        return redirect()->route('prodi.index')->with('success', 'Data Prodi berhasil diperbarui.');
     }
 
-    public function destroy(Prodi $prodi)
+    public function destroy($id)
     {
-        $prodi->delete();
-        return redirect()->route('prodi.index')->with('success', 'Prodi dihapus.');
+        Prodi::findOrFail($id)->delete();
+        return redirect()->route('prodi.index')->with('success', 'Data Prodi berhasil dihapus.');
     }
 }

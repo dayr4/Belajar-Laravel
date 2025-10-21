@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Mahasiswa extends Model
 {
     use HasFactory;
+
     protected $fillable = ['nim', 'nama', 'alamat', 'prodi_id'];
 
     public function prodi()

@@ -1,28 +1,33 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Tambah Mahasiswa</title>
-</head>
-<body>
-    <h1>➕ Tambah Mahasiswa</h1>
+<h2>Tambah Mahasiswa</h2>
 
-    <form method="POST" action="{{ url('/mahasiswa') }}">
-        @csrf
-        <p>
-            NIM: <input type="text" name="nim" value="{{ old('nim') }}">
-            @error('nim') <span style="color:red;">{{ $message }}</span> @enderror
-        </p>
-        <p>
-            Nama: <input type="text" name="nama" value="{{ old('nama') }}">
-            @error('nama') <span style="color:red;">{{ $message }}</span> @enderror
-        </p>
-        <p>
-            Prodi: <input type="text" name="prodi" value="{{ old('prodi') }}">
-            @error('prodi') <span style="color:red;">{{ $message }}</span> @enderror
-        </p>
-        <button type="submit">Simpan</button>
-    </form>
+@if ($errors->any())
+    <ul style="color:red;">
+        @foreach ($errors->all() as $err)
+            <li>{{ $err }}</li>
+        @endforeach
+    </ul>
+@endif
 
-    <p><a href="{{ url('/mahasiswa') }}">⬅ Kembali</a></p>
-</body>
-</html>
+<form action="{{ route('mahasiswa.store') }}" method="POST">
+    @csrf
+    <label>NIM:</label><br>
+    <input type="text" name="nim"><br>
+
+    <label>Nama:</label><br>
+    <input type="text" name="nama"><br>
+
+    <label>Alamat:</label><br>
+    <textarea name="alamat"></textarea><br>
+
+    <label>Program Studi:</label><br>
+    <select name="prodi_id">
+        <option value="">-- Pilih Prodi --</option>
+        @foreach ($prodi as $p)
+            <option value="{{ $p->id }}">{{ $p->nama }} ({{ $p->fakultas->nama_fakultas }})</option>
+        @endforeach
+    </select><br>
+
+    <button type="submit">Simpan</button>
+</form>
+
+<a href="{{ route('mahasiswa.index') }}">← Kembali</a>

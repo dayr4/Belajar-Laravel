@@ -1,29 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+    <meta charset="UTF-8">
     <title>Edit Mahasiswa</title>
 </head>
 <body>
-    <h1>✏️ Edit Mahasiswa</h1>
+    <h2>✏️ Edit Mahasiswa</h2>
 
-    <form method="POST" action="{{ url('/mahasiswa/'.$m->id) }}">
+    @if ($errors->any())
+        <div style="color: red;">
+            <ul>
+                @foreach ($errors->all() as $err)
+                    <li>{{ $err }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form method="POST" action="{{ route('mahasiswa.update', $m->id) }}">
         @csrf
         @method('PUT')
+
         <p>
-            NIM: <input type="text" name="nim" value="{{ old('nim', $m->nim) }}">
-            @error('nim') <span style="color:red;">{{ $message }}</span> @enderror
+            <label>NIM:</label><br>
+            <input type="text" name="nim" value="{{ old('nim', $m->nim) }}">
         </p>
+
         <p>
-            Nama: <input type="text" name="nama" value="{{ old('nama', $m->nama) }}">
-            @error('nama') <span style="color:red;">{{ $message }}</span> @enderror
+            <label>Nama:</label><br>
+            <input type="text" name="nama" value="{{ old('nama', $m->nama) }}">
         </p>
+
         <p>
-            Prodi: <input type="text" name="prodi" value="{{ old('prodi', $m->prodi) }}">
-            @error('prodi') <span style="color:red;">{{ $message }}</span> @enderror
+            <label>Alamat:</label><br>
+            <textarea name="alamat">{{ old('alamat', $m->alamat) }}</textarea>
         </p>
+
+        <p>
+            <label>Program Studi:</label><br>
+            <select name="prodi_id">
+                @foreach ($prodi as $p)
+                    <option value="{{ $p->id }}" {{ $p->id == $m->prodi_id ? 'selected' : '' }}>
+                        {{ $p->nama }}
+                    </option>
+                @endforeach
+            </select>
+        </p>
+
         <button type="submit">Update</button>
     </form>
 
-    <p><a href="{{ url('/mahasiswa') }}">⬅ Kembali</a></p>
+    <p><a href="{{ route('mahasiswa.index') }}">⬅ Kembali</a></p>
 </body>
 </html>
