@@ -1,17 +1,34 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HelloController;
-use App\Http\Controllers\FakultasController;
-use App\Http\Controllers\ProdiController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MahasiswaController;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/mahasiswa'); // langsung arahkan ke halaman mahasiswa
 });
 
-Route::get('/hello-controller', [HelloController::class, 'index']);
+// 🔒 Rute yang hanya bisa diakses setelah login
+Route::middleware(['auth', 'verified'])->group(function () {
 
-Route::resource('fakultas', FakultasController::class);
-Route::resource('prodi', ProdiController::class);
-Route::resource('mahasiswa', MahasiswaController::class);
+    // Dashboard default Breeze
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    // CRUD Mahasiswa
+    Route::resource('mahasiswa', MahasiswaController::class);
+
+    // Profile (dari Breeze)
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
