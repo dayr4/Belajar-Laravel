@@ -15,7 +15,7 @@ use Illuminate\View\View;
 class RegisteredUserController extends Controller
 {
     /**
-     * Display the registration view.
+     * Tampilkan halaman registrasi.
      */
     public function create(): View
     {
@@ -23,28 +23,33 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
+     * Proses registrasi pengguna baru.
      */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'in:dosen,mahasiswa'], // ✅ validasi role
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => $request->role, // ✅ simpan role ke database
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Arahkan sesuai role
+        if ($user->role === 'dosen') {
+            return redirect()->route('mahasiswa.index'); // dosen ke halaman data mahasiswa
+        }
+
+        return redirect()->route('dashboard'); // mahasiswa ke dashboard biasa
     }
 }
