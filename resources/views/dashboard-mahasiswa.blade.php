@@ -1,32 +1,49 @@
-{{-- resources/views/dashboard-mahasiswa.blade.php --}}
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            🎓 Dashboard Mahasiswa
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 space-y-4">
-                <h3 class="text-lg font-semibold text-gray-700">Halo, {{ Auth::user()->name }}!</h3>
-                <p class="text-gray-600">Anda login sebagai <strong>Mahasiswa</strong>.</p>
+@section('content')
+<div class="container mt-5">
+    <h1 class="mb-4">Dashboard Mahasiswa</h1>
+    <p>Selamat datang, <strong>{{ Auth::user()->name }}</strong>!</p>
 
-                <div class="mt-6">
-                    <a href="{{ route('mahasiswa.index') }}"
-                       class="inline-block bg-blue-500 text-white px-5 py-3 rounded-lg hover:bg-blue-600 transition">
-                        🧾 Lihat Daftar Mahasiswa
-                    </a>
-                </div>
-
-                <form method="POST" action="{{ route('logout') }}" class="mt-8">
-                    @csrf
-                    <button type="submit"
-                            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
-                        Logout
-                    </button>
-                </form>
-            </div>
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            📋 Daftar Mahasiswa
+        </div>
+        <div class="card-body">
+            @if($mahasiswa->isEmpty())
+                <p class="text-muted">Belum ada data mahasiswa.</p>
+            @else
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>NIM</th>
+                            <th>Nama</th>
+                            <th>Alamat</th>
+                            <th>Program Studi</th>
+                            <th>Fakultas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($mahasiswa as $m)
+                            <tr>
+                                <td>{{ $m->nim }}</td>
+                                <td>{{ $m->nama }}</td>
+                                <td>{{ $m->alamat ?? '-' }}</td>
+                                <td>{{ $m->prodi->nama ?? '-' }}</td>
+                                <td>{{ $m->prodi->fakultas->nama ?? '-' }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
         </div>
     </div>
-</x-app-layout>
+
+    <div class="mt-4">
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button class="btn btn-danger">Logout</button>
+        </form>
+    </div>
+</div>
+@endsection

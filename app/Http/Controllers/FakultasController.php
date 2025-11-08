@@ -20,9 +20,15 @@ class FakultasController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['nama' => 'required']);
-        Fakultas::create($request->all());
-        return redirect()->route('fakultas.index')->with('success', 'Fakultas berhasil ditambahkan.');
+        $request->validate([
+            'nama_fakultas' => 'required|string|max:255',
+        ]);
+
+        \App\Models\Fakultas::create([
+            'nama_fakultas' => $request->nama_fakultas,
+        ]);
+
+        return redirect()->route('fakultas.index')->with('success', 'Fakultas berhasil ditambahkan!');
     }
 
     public function edit(Fakultas $fakultas)

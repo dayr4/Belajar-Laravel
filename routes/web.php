@@ -44,11 +44,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // ===============================
-    // DASHBOARD MAHASISWA
+    //  DASHBOARD MAHASISWA
     // ===============================
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard-mahasiswa', function () {
-            return view('dashboard-mahasiswa');
+            $mahasiswa = \App\Models\Mahasiswa::with('prodi.fakultas')->get();
+            return view('dashboard-mahasiswa', compact('mahasiswa'));
         })->name('dashboard.mahasiswa');
 
         // Mahasiswa hanya bisa melihat daftar mahasiswa

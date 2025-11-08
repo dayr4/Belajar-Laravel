@@ -27,7 +27,11 @@ class ProdiController extends Controller
             'fakultas_id' => 'required|exists:fakultas,id',
         ]);
 
-        Prodi::create($request->all());
+        Prodi::create([
+            'nama' => $request->nama,
+            'fakultas_id' => $request->fakultas_id,
+        ]);
+
         return redirect()->route('prodi.index')->with('success', 'Prodi berhasil ditambahkan.');
     }
 
@@ -44,8 +48,10 @@ class ProdiController extends Controller
             'fakultas_id' => 'required|exists:fakultas,id',
         ]);
 
-        $prodi->update($request->all());
-        return redirect()->route('prodi.index')->with('success', 'Prodi berhasil diperbarui.');
+        $prodi->update([
+            'nama' => $request->nama,
+            'fakultas_id' => $request->fakultas_id,
+        ]);
     }
 
     public function destroy(Prodi $prodi)
