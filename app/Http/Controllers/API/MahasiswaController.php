@@ -3,46 +3,36 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Mahasiswa;
+use Illuminate\Http\Request;
 
 class MahasiswaController extends Controller
 {
     public function index()
     {
-        return response()->json(Mahasiswa::with('prodi.fakultas')->get());
+        $mahasiswa = Mahasiswa::with('prodi.fakultas')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $mahasiswa
+        ]);
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nim' => 'required|unique:mahasiswas',
+        $validated = $request->validate([
+            'nim' => 'required|min:4|unique:mahasiswas',
             'nama' => 'required',
             'alamat' => 'nullable',
             'prodi_id' => 'required|exists:prodis,id',
         ]);
 
-        $mahasiswa = Mahasiswa::create($request->all());
-        return response()->json(['message' => 'Mahasiswa ditambahkan', 'data' => $mahasiswa]);
-    }
+        $m = Mahasiswa::create($validated);
 
-    public function show($id)
-    {
-        $mahasiswa = Mahasiswa::with('prodi.fakultas')->findOrFail($id);
-        return response()->json($mahasiswa);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $mahasiswa = Mahasiswa::findOrFail($id);
-        $mahasiswa->update($request->all());
-        return response()->json(['message' => 'Mahasiswa diperbarui', 'data' => $mahasiswa]);
-    }
-
-    public function destroy($id)
-    {
-        $mahasiswa = Mahasiswa::findOrFail($id);
-        $mahasiswa->delete();
-        return response()->json(['message' => 'Mahasiswa dihapus']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Mahasiswa berhasil ditambahkan',
+            'data' => $m
+        ], 201);
     }
 }
