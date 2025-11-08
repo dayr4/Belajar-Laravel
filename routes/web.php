@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\ProdiController;
+use App\Http\Controllers\FakultasController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,7 +23,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ===============================
     // DASHBOARD (default Breeze)
     // ===============================
-    // Tidak ada redirect otomatis di sini!
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
@@ -30,16 +31,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // DASHBOARD DOSEN
     // ===============================
     Route::middleware('admin')->group(function () {
+
+        // Halaman dashboard khusus dosen
         Route::get('/dashboard-dosen', function () {
             return view('dashboard-dosen');
         })->name('dashboard.dosen');
 
-        // CRUD Mahasiswa (khusus dosen)
+        // CRUD Fakultas, Prodi, dan Mahasiswa (khusus dosen)
+        Route::resource('fakultas', FakultasController::class);
+        Route::resource('prodi', ProdiController::class);
         Route::resource('mahasiswa', MahasiswaController::class);
     });
 
     // ===============================
-    //  DASHBOARD MAHASISWA
+    // DASHBOARD MAHASISWA
     // ===============================
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard-mahasiswa', function () {
@@ -52,7 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // ===============================
-    //  PROFILE (Breeze)
+    // PROFILE (Breeze)
     // ===============================
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

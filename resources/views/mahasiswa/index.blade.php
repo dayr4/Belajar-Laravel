@@ -1,60 +1,69 @@
-@extends('layouts.app')
-@section('title', 'Data Mahasiswa')
+{{-- resources/views/mahasiswa/index.blade.php --}}
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            🧑‍🎓 Daftar Mahasiswa
+        </h2>
+    </x-slot>
 
-@section('content')
-<div class="card shadow-sm">
-    <div class="card-body">
-        <h3 class="mb-3">Daftar Mahasiswa</h3>
+    <div class="py-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white shadow-xl sm:rounded-lg p-6">
 
-        {{-- Tombol tambah hanya muncul untuk dosen --}}
-        @if(auth()->user()->role === 'dosen')
-            <a href="{{ route('mahasiswa.create') }}" class="btn btn-success mb-3">+ Tambah Mahasiswa</a>
-        @endif
+                @if(session('success'))
+                    <div class="mb-4 bg-green-100 text-green-800 p-3 rounded">
+                        {{ session('success') }}
+                    </div>
+                @endif
 
-        {{-- Notifikasi sukses --}}
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
+                <div class="flex justify-between mb-4">
+                    <h3 class="text-lg font-semibold">List Mahasiswa</h3>
+                    <a href="{{ route('mahasiswa.create') }}" 
+                       class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                        ➕ Tambah Mahasiswa
+                    </a>
+                </div>
 
-        <table class="table table-bordered table-hover">
-            <thead class="table-primary">
-                <tr>
-                    <th>NIM</th>
-                    <th>Nama</th>
-                    <th>Alamat</th>
-                    <th>Prodi</th>
-                    <th>Fakultas</th>
-                    @if(auth()->user()->role === 'dosen')
-                        <th width="150">Aksi</th>
-                    @endif
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($mahasiswa as $m)
-                    <tr>
-                        <td>{{ $m->nim }}</td>
-                        <td>{{ $m->nama }}</td>
-                        <td>{{ $m->alamat }}</td>
-                        <td>{{ $m->prodi->nama ?? '-' }}</td>
-                        <td>{{ $m->prodi->fakultas->nama_fakultas ?? '-' }}</td>
+                <table class="min-w-full border border-gray-200 divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-4 py-2 text-left">NIM</th>
+                            <th class="px-4 py-2 text-left">Nama</th>
+                            <th class="px-4 py-2 text-left">Alamat</th>
+                            <th class="px-4 py-2 text-left">Program Studi</th>
+                            <th class="px-4 py-2 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @forelse($mahasiswa as $m)
+                            <tr>
+                                <td class="px-4 py-2">{{ $m->nim }}</td>
+                                <td class="px-4 py-2">{{ $m->nama }}</td>
+                                <td class="px-4 py-2">{{ $m->alamat ?? '-' }}</td>
+                                <td class="px-4 py-2">{{ $m->prodi->nama ?? '-' }}</td>
+                                <td class="px-4 py-2 text-center">
+                                    <a href="{{ route('mahasiswa.edit', $m->id) }}" 
+                                       class="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500 transition">✏️ Edit</a>
 
-                        {{-- Aksi edit & hapus hanya untuk dosen --}}
-                        @if(auth()->user()->role === 'dosen')
-                        <td>
-                            <a href="{{ route('mahasiswa.edit', $m->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('mahasiswa.destroy', $m->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-danger btn-sm" onclick="return confirm('Hapus mahasiswa ini?')">
-                                    Hapus
-                                </button>
-                            </form>
-                        </td>
-                        @endif
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+                                    <form action="{{ route('mahasiswa.destroy', $m->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button onclick="return confirm('Yakin ingin menghapus data ini?')" 
+                                                class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+                                            🗑️ Hapus
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-gray-500">Belum ada data mahasiswa.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
     </div>
-</div>
-@endsection
+</x-app-layout>

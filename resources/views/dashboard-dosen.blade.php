@@ -1,22 +1,27 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard Dosen') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <h1 class="text-2xl font-bold mb-4">Selamat datang, <span class="text-blue-600">{{ Auth::user()->name }}</span> 👋</h1>
-                    <p class="mb-6 text-gray-600">Anda login sebagai <strong>Dosen</strong>. Gunakan menu di atas untuk mengelola data mahasiswa.</p>
+@section('content')
+<div class="container mt-5">
+    <h1 class="mb-4">Dashboard Dosen</h1>
+    <p>Selamat datang, <strong>{{ Auth::user()->name }}</strong>!</p>
 
-                    <a href="{{ route('mahasiswa.index') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                        Kelola Data Mahasiswa
-                    </a>
-                </div>
-            </div>
-        </div>
+    <div class="list-group mt-4">
+        <a href="{{ route('fakultas.index') }}" class="list-group-item list-group-item-action">
+            📚 Kelola Fakultas
+        </a>
+        <a href="{{ route('prodi.index') }}" class="list-group-item list-group-item-action">
+            🏫 Kelola Program Studi
+        </a>
+        <a href="{{ route('mahasiswa.index') }}" class="list-group-item list-group-item-action">
+            🎓 Kelola Mahasiswa
+        </a>
     </div>
-</x-app-layout>
+
+    <div class="mt-4">
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button class="btn btn-danger">Logout</button>
+        </form>
+    </div>
+</div>
+@endsection
